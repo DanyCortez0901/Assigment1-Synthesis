@@ -1,0 +1,89 @@
+
+generator int exp(int nvars, int nconsts, int bnd, int[nvars] vars, int[nconsts] consts){
+    //In this generator, nvars is the number of variables and nconsts is the number of constants.
+    //the array vars contains the values of all the variables and the array consts of all the constants.
+    //Note that unlike problem 1, where you were generating ASTs, here you are synthesizing the actual function.
+    //Also note that you will probably need a separate generator for the boolean expressions.
+    if (bnd == 0) {
+        int nconstant = ??;
+        return consts[nconstant];
+    }
+    int type = ??;
+    if (type == 0) {
+        int nconstant = ??;
+        return consts[nconstant];
+    }
+    if (type == 1) {
+        int nvar = ??;
+        return vars[nvar];
+    }
+    if (type == 2) {
+        int left = exp(nvars, nconsts, bnd-1, vars, consts);
+        int rigth = exp(nvars, nconsts, bnd-1, vars, consts);
+        return left + rigth;
+    }
+    if (type == 3) {
+        int left = exp(nvars, nconsts, bnd-1, vars, consts);
+        int rigth = exp(nvars, nconsts, bnd-1, vars, consts);
+        return left * rigth;
+    }
+    if (type == 4) {
+        bit condition = auxBools(nvars, nconsts, bnd-1, vars, consts);
+        int thenExp = exp(nvars, nconsts, bnd-1, vars, consts);
+        int elseExp = exp(nvars, nconsts, bnd-1, vars, consts);
+        return condition ? thenExp:elseExp;
+    }
+}
+
+generator bit auxBools(int nvars, int nconsts, int bnd, int[nvars] vars, int[nconsts] consts){
+
+    if (bnd == 0) {
+        return false;
+    }
+    int type = ??;
+    if (type ==0) {
+        return false;
+    }
+    if (type ==1) {
+        bit negative = auxBools(nvars, nconsts, (bnd-1), vars, consts);
+        return !negative;
+    }
+    if (type ==2) {
+        bit left = auxBools(nvars, nconsts, bnd-1, vars, consts);
+        bit rigth = auxBools(nvars, nconsts, bnd-1, vars, consts);
+        return left < rigth;
+    }
+    if (type ==3) {
+        bit left = auxBools(nvars, nconsts, bnd-1, vars, consts);
+        bit rigth = auxBools(nvars, nconsts, bnd-1, vars, consts);
+        return left && rigth;
+    }
+}
+
+
+int aux ([int nvars, int nconsts], int bnd, int[nvars] vars, int[nconsts] consts){
+  int fin =([nvars,ncons], bnd,vars, consts);
+  return fin; 
+}
+
+/*
+harness void experiment2(){
+    //Use this harness for the example from 1.e
+    //Assume that x is the first variable and y is the second variable, so the
+    //input x=10 and y=7, for example will correspond to an array {10,7}.
+    assert aux([2,4], 3, [10, 7], [-1,0,1,2]) == 17;
+    assert aux([2,4], 3, [4, 7], [0,-1,2,3]) == -7;
+    assert aux([2,4], 3, [10, 3], [0,-1,2,3]) == 13;
+    assert aux([2,4], 3, [1, 3], [0,-1,2,3]) == -6;
+    assert aux([2,4], 3, [1, 8], [0,-1,2,3]) == -8;
+}
+*/
+
+harness void experiment1(){
+    //Use this harness for the example from 1.b
+    //Assume that x is the first variable and y is the second variable, so the
+    //input x=8 and y=3, for example will correspond to an array {8,3}.
+    assert aux([2,4], 3, [5, 5], [1,0,1,2]) == 15;
+    assert aux([2,4], 3, [8, 3], [0,1,2,3]) == 14;
+    assert aux([2,4], 3, [1234, 224], [0,1,2,3]) == 1688;
+}
